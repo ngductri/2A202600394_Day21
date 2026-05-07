@@ -3,6 +3,7 @@
 - **Mô hình:** `unsloth/Qwen2.5-3B-bnb-4bit` (Quantized 4-bit)
 - **Tập dữ liệu:** `5CD-AI/Vietnamese-alpaca-gpt4-gg-translated`
 - **GPU sử dụng:** NVIDIA Tesla T4 (16GB VRAM)
+- *Link for OUTPUT_DIR*: https://drive.google.com/drive/folders/1rm7FYLEFVK9It1l6Vx2ezBv9zkryTWFy?usp=sharing
 
 ---
 
@@ -28,9 +29,9 @@ Quá trình fine-tuning được thực hiện bằng thư viện **Unsloth**, g
 
 ## 2. Kết quả thí nghiệm Rank
 
-Em đã thử nghiệm với ba mức rank LoRA ($r$) khác nhau để quan sát sự đánh đổi giữa hiệu năng mô hình (perplexity), mức sử dụng bộ nhớ (VRAM) và tốc độ huấn luyện.
+Em đã thử nghiệm với ba mức rank LoRA (rr) khác nhau để quan sát sự đánh đổi giữa hiệu năng mô hình (perplexity), mức sử dụng bộ nhớ (VRAM) và tốc độ huấn luyện.
 
-| Rank ($r$) | Alpha ($\alpha$) | Tham số huấn luyện | Thời gian (phút) | VRAM đỉnh (GB) | Loss đánh giá | Perplexity |
+| Rank (rr) | Alpha (α\alpha) | Tham số huấn luyện | Thời gian (phút) | VRAM đỉnh (GB) | Loss đánh giá | Perplexity |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **8** | 16 | 1,843,200 | 4.16 | 7.84 | 1.5577 | 4.75 |
 | **16** | 32 | 3,686,400 | 4.11 | 7.24 | 1.5161 | 4.55 |
@@ -38,13 +39,13 @@ Em đã thử nghiệm với ba mức rank LoRA ($r$) khác nhau để quan sát
 
 **Quan sát:**
 - **Hiệu năng:** Việc tăng rank từ 8 lên 64 dẫn đến việc giảm liên tục loss đánh giá (từ 1.5577 xuống 1.4768) và perplexity (từ 4.75 xuống 4.38). Điều này cho thấy rank cao hơn cho phép các adapter LoRA học được các đặc điểm phức tạp hơn trong các chỉ dẫn tiếng Việt.
-- **Bộ nhớ (VRAM):** Mức sử dụng VRAM tăng dần theo rank, đặc biệt rõ rệt ở mức $r=64$ (8.62 GB so với 7.84 GB ở $r=8$). Đáng ngạc nhiên là $r=16$ cho thấy mức VRAM đỉnh thấp hơn trong lần chạy này, có thể do vấn đề phân mảnh bộ nhớ hoặc cơ chế quản lý bộ nhớ cụ thể tại thời điểm đó.
+- **Bộ nhớ (VRAM):** Mức sử dụng VRAM tăng dần theo rank, đặc biệt rõ rệt ở mức r=64r=64 (8.62 GB so với 7.84 GB ở r=8r=8). Đáng ngạc nhiên là r=16r=16 cho thấy mức VRAM đỉnh thấp hơn trong lần chạy này, có thể do vấn đề phân mảnh bộ nhớ hoặc cơ chế quản lý bộ nhớ cụ thể tại thời điểm đó.
 - **Thời gian:** Thời gian huấn luyện duy trì khá ổn định ở các mức rank (~4.1 phút), cho thấy đối với quy mô cụ thể này, nút thắt cổ chai về tính toán không nằm chủ yếu ở việc cập nhật trọng số adapter.
 
 ### 2.1. So sánh LoRA và DoRA (với rank r=16)
 Em thực hiện so sánh giữa phương pháp LoRA truyền thống và DoRA (Weight-Decomposed Low-Rank Adaptation) để kiểm tra tính hiệu quả của việc phân tách độ lớn (magnitude) và hướng (direction) trong quá trình thích nghi.
 
-| Phương pháp | Rank ($r$) | Thời gian (phút) | VRAM đỉnh (GB) | Loss huấn luyện | Perplexity |
+| Phương pháp | Rank (rr) | Thời gian (phút) | VRAM đỉnh (GB) | Loss huấn luyện | Perplexity |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **LoRA** | 16 | 3.65 | 10.82 | 1.4708 | 4.55 |
 | **DoRA** | 16 | 4.34 | 11.69 | 1.4699 | 4.55 |
